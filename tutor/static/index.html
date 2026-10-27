@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>引力场 · 高中物理辅导</title>
+  <style>
+    :root {
+      --paper: #f5f0e5;
+      --paper-deep: #e9e0cf;
+      --ink: #102b4e;
+      --ink-soft: #526276;
+      --blue: #174c8f;
+      --blue-pale: #dce8f5;
+      --red: #bd3b2d;
+      --line: rgba(23, 76, 143, .13);
+      --shadow: 0 18px 45px rgba(34, 43, 54, .14);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: "LXGW WenKai", "Microsoft YaHei", sans-serif;
+      background-color: var(--paper);
+      background-image:
+        linear-gradient(var(--line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line) 1px, transparent 1px);
+      background-size: 26px 26px;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at 75% 8%, rgba(255,255,255,.9), transparent 34%),
+                  linear-gradient(90deg, rgba(189,59,45,.06) 2px, transparent 2px);
+      background-size: auto, 100% 100%;
+    }
+    button, input, textarea { font: inherit; }
+    button { color: inherit; }
+    .app {
+      position: relative;
+      display: grid;
+      grid-template-columns: 340px minmax(0, 1fr);
+      min-height: 100vh;
+      animation: enter .55s ease-out both;
+    }
+    @keyframes enter { from { opacity: 0; transform: translateY(10px); } }
+    .atlas {
+      min-height: 100vh;
+      padding: 30px 24px;
+      background: rgba(245, 240, 229, .92);
+      border-right: 2px solid var(--ink);
+      box-shadow: 8px 0 24px rgba(16,43,78,.08);
+      overflow-y: auto;
+    }
+    .brand { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+    .orbit {
+      position: relative;
+      width: 50px; height: 50px; flex: 0 0 auto;
+      border: 2px solid var(--blue); border-radius: 50%; transform: rotate(-18deg);
+    }
+    .orbit::before { content: ""; position: absolute; width: 8px; height: 8px; border-radius: 50%; background: var(--red); top: -4px; left: 19px; }
+    .orbit::after { content: "g"; position: absolute; inset: 8px; display: grid; place-items: center; font: italic 700 24px Georgia, serif; transform: rotate(18deg); }
+    h1 { margin: 0; font: 700 25px "STKaiti", "KaiTi", serif; letter-spacing: .08em; }
+    .edition { margin: 3px 0 0; color: var(--ink-soft); font-size: 12px; letter-spacing: .08em; }
+    .atlas-label { display: flex; justify-content: space-between; align-items: baseline; margin: 0 2px 13px; }
+    .atlas-label strong { font-size: 12px; letter-spacing: .18em; }
+    .atlas-label span { font: italic 12px Georgia, serif; color: var(--red); }
+    details { border-top: 1px solid rgba(16,43,78,.24); }
+    details:last-child { border-bottom: 1px solid rgba(16,43,78,.24); }
+    summary {
+      cursor: pointer; list-style: none; padding: 14px 4px; font-weight: 700; display: flex; gap: 9px; align-items: center;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::before { content: "+"; color: var(--red); font: 700 19px Georgia, serif; width: 14px; }
+    details[open] > summary::before { content: "−"; }
+    .section-title { margin: 8px 0 5px 23px; color: var(--ink-soft); font-size: 12px; }
+    .point {
+      width: calc(100% - 23px); margin: 3px 0 3px 23px; padding: 9px 11px;
+      border: 0; border-left: 3px solid transparent; background: transparent; text-align: left; cursor: pointer;
+      transition: .16s ease;
+    }
+    .point:hover:not(:disabled) { background: rgba(23,76,143,.08); border-left-color: var(--blue); transform: translateX(3px); }
+    .point.active { color: #fff; background: var(--blue); border-left-color: var(--red); box-shadow: 4px 4px 0 rgba(189,59,45,.22); }
+    .point:disabled { cursor: not-allowed; opacity: .38; text-decoration: line-through; text-decoration-thickness: 1px; }
+    .point-code { display: block; font: 10px Consolas, monospace; opacity: .7; margin-bottom: 2px; }
+    .workspace { min-width: 0; display: grid; grid-template-rows: auto 1fr auto; height: 100vh; }
+    .topbar {
+      display: flex; align-items: center; gap: 18px; padding: 19px 34px 17px;
+      border-bottom: 1px solid rgba(16,43,78,.24); background: rgba(245,240,229,.78); backdrop-filter: blur(8px);
+    }
+    .mobile-tree { display: none; border: 1px solid var(--ink); background: transparent; padding: 7px 10px; }
+    .focus { min-width: 0; margin-right: auto; }
+    .focus small { display: block; color: var(--red); font: italic 11px Georgia, serif; letter-spacing: .12em; }
+    .focus strong { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 3px; }
+    .clear-focus { border: 0; background: none; color: var(--ink-soft); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+    .modes { display: flex; padding: 4px; border: 1px solid var(--ink); background: var(--paper); }
+    .mode { border: 0; padding: 8px 14px; background: transparent; cursor: pointer; font-size: 13px; }
+    .mode.active { color: #fff; background: var(--ink); }
+    .transcript { overflow-y: auto; padding: 38px clamp(24px, 6vw, 86px) 24px; scroll-behavior: smooth; }
+    .welcome { max-width: 740px; margin: 5vh auto 30px; }
+    .welcome .eyebrow { color: var(--red); font: italic 13px Georgia, serif; letter-spacing: .16em; }
+    .welcome h2 { margin: 12px 0; font: 700 clamp(32px, 5vw, 62px)/1.12 "STKaiti", "KaiTi", serif; letter-spacing: .06em; }
+    .welcome p { max-width: 580px; color: var(--ink-soft); line-height: 1.85; }
+    .message { max-width: 760px; margin: 0 auto 22px; display: grid; grid-template-columns: 48px 1fr; gap: 14px; animation: rise .26s ease-out; }
+    @keyframes rise { from { opacity: 0; transform: translateY(8px); } }
+    .message.user { grid-template-columns: 1fr 48px; }
+    .message.user .avatar { grid-column: 2; }
+    .message.user .bubble { grid-column: 1; grid-row: 1; background: var(--ink); color: #fff; justify-self: end; }
+    .avatar { width: 42px; height: 42px; border: 1px solid var(--ink); display: grid; place-items: center; border-radius: 50%; font: italic 700 17px Georgia, serif; background: var(--paper); }
+    .assistant .avatar { color: #fff; background: var(--red); border-color: var(--red); }
+    .bubble { max-width: 100%; padding: 16px 19px; border: 1px solid var(--ink); background: rgba(255,255,255,.55); box-shadow: 4px 5px 0 rgba(16,43,78,.09); line-height: 1.75; white-space: pre-wrap; }
+    .interrupt { max-width: 710px; margin: 6px auto 24px; padding: 20px; border: 2px solid var(--red); background: rgba(255,250,240,.92); box-shadow: 7px 7px 0 rgba(189,59,45,.15); animation: rise .3s ease-out; }
+    .interrupt-kicker { color: var(--red); font: italic 12px Georgia, serif; letter-spacing: .12em; margin-bottom: 8px; }
+    .interrupt h3 { font: 700 20px "STKaiti", "KaiTi", serif; margin: 0 0 14px; }
+    .choices { display: grid; gap: 9px; }
+    .choice { border: 1px solid var(--ink); background: transparent; padding: 12px 14px; text-align: left; cursor: pointer; transition: .15s; }
+    .choice:hover { color: #fff; background: var(--blue); transform: translateX(4px); }
+    .choice code { margin-right: 10px; opacity: .65; }
+    .answer-row { display: flex; gap: 9px; }
+    .answer-row input { flex: 1; min-width: 0; border: 1px solid var(--ink); padding: 11px 13px; background: #fffdf7; outline: none; }
+    .answer-row input:focus { box-shadow: inset 0 -3px var(--blue-pale); }
+    .answer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1.2fr; gap: 10px; margin-top: 18px; }
+    .field { display: grid; gap: 5px; color: var(--ink-soft); font-size: 11px; letter-spacing: .08em; }
+    .field input, .field select { min-width: 0; border: 1px solid var(--ink); padding: 11px 12px; color: var(--ink); background: #fffdf7; outline: none; }
+    .field input:focus, .field select:focus { box-shadow: inset 0 -3px var(--blue-pale); }
+    .process { margin: 14px 0; border-top: 1px dashed rgba(16,43,78,.35); border-bottom: 1px dashed rgba(16,43,78,.35); }
+    .process summary { padding: 11px 2px; font-size: 13px; }
+    .process-fields { display: grid; gap: 9px; padding: 0 0 13px; }
+    .practice-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .attempt { color: var(--ink-soft); font-size: 12px; }
+    .grade-card { max-width: 710px; margin: 6px auto 20px; padding: 18px 20px; border: 1px solid var(--blue); background: rgba(220,232,245,.62); box-shadow: 5px 5px 0 rgba(23,76,143,.13); }
+    .grade-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+    .grade-head strong { font: 700 22px Georgia, serif; color: var(--blue); }
+    .score-track { height: 7px; margin: 10px 0 14px; background: rgba(16,43,78,.13); overflow: hidden; }
+    .score-track span { display: block; height: 100%; background: var(--red); }
+    .rubrics { display: grid; gap: 6px; }
+    .rubric { display: grid; grid-template-columns: 1fr auto; gap: 12px; font-size: 12px; }
+    .rubric b { color: var(--blue); }
+    .grade-errors { margin-top: 10px; color: var(--red); font-size: 12px; }
+    .solution { margin: 12px 0 0; padding-top: 10px; border-top: 1px solid rgba(16,43,78,.2); white-space: pre-wrap; line-height: 1.7; }
+    .hint-card { max-width: 710px; margin: 0 auto 18px; padding: 12px 16px; border-left: 4px solid #d18b24; background: rgba(255,244,210,.8); line-height: 1.6; }
+    .primary { border: 1px solid var(--ink); color: #fff; background: var(--red); padding: 10px 18px; cursor: pointer; box-shadow: 3px 3px 0 var(--ink); }
+    .primary:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--ink); }
+    .composer-wrap { padding: 16px clamp(24px, 6vw, 86px) 24px; background: linear-gradient(transparent, var(--paper) 20%); }
+    .composer { max-width: 760px; margin: auto; display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: end; }
+    textarea { resize: none; min-height: 58px; max-height: 160px; padding: 16px 18px; border: 2px solid var(--ink); background: rgba(255,253,247,.95); outline: none; box-shadow: 5px 6px 0 rgba(16,43,78,.13); }
+    textarea:focus { border-color: var(--blue); box-shadow: 5px 6px 0 rgba(23,76,143,.22); }
+    .send { height: 58px; min-width: 92px; }
+    .hint { grid-column: 1 / -1; color: var(--ink-soft); font-size: 11px; display: flex; justify-content: space-between; }
+    .status-dot { display: inline-block; width: 7px; height: 7px; margin-right: 6px; border-radius: 50%; background: #4d8b62; }
+    .status-dot.busy { background: #d18b24; animation: blink .9s infinite alternate; }
+    @keyframes blink { to { opacity: .3; } }
+    @media (max-width: 820px) {
+      .app { grid-template-columns: 1fr; }
+      .atlas { position: fixed; z-index: 10; width: min(88vw, 340px); transform: translateX(-105%); transition: transform .24s; }
+      .atlas.open { transform: translateX(0); }
+      .workspace { height: 100dvh; }
+      .mobile-tree { display: block; }
+      .topbar { padding: 13px 16px; gap: 10px; flex-wrap: wrap; }
+      .focus { max-width: calc(100% - 55px); }
+      .modes { order: 3; width: 100%; }
+      .mode { flex: 1; }
+      .transcript { padding: 22px 15px; }
+      .composer-wrap { padding: 12px 15px 16px; }
+      .message { grid-template-columns: 38px 1fr; gap: 8px; }
+      .message.user { grid-template-columns: 1fr 38px; }
+      .avatar { width: 34px; height: 34px; font-size: 14px; }
+      .composer { grid-template-columns: 1fr 76px; }
+      .answer-grid { grid-template-columns: 1fr 1fr; }
+      .answer-grid .field:first-child { grid-column: 1 / -1; }
+      .practice-actions { align-items: stretch; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="atlas" id="atlas">
+      <div class="brand"><div class="orbit"></div><div><h1>引力场</h1><p class="edition" id="edition">高中物理 · 知识图谱</p></div></div>
+      <div class="atlas-label"><strong>知识坐标</strong><span>KNOWLEDGE ATLAS</span></div>
+      <nav id="tree" aria-label="物理知识树"></nav>
+    </aside>
+    <main class="workspace">
+      <header class="topbar">
+        <button class="mobile-tree" id="treeToggle" aria-label="打开知识树">目录</button>
+        <div class="focus"><small>CURRENT VECTOR</small><strong id="focusName">未选择知识点</strong></div>
+        <button class="clear-focus" id="clearFocus">让助手判断</button>
+        <div class="modes" role="group" aria-label="学习模式">
+          <button class="mode active" data-mode="explain">讲解</button>
+          <button class="mode" data-mode="practice">练习</button>
+          <button class="mode" data-mode="mistakes">错题</button>
+        </div>
+      </header>
+      <section class="transcript" id="transcript" aria-live="polite">
+        <div class="welcome" id="welcome"><div class="eyebrow">PHYSICS / GUIDED LEARNING</div><h2>把每一个“为什么”<br>落到一条定律上。</h2><p>从左侧知识坐标选一个主题，或直接描述你卡住的地方。讲解模式先建立直觉，再落到公式与例子。</p></div>
+      </section>
+      <footer class="composer-wrap">
+        <form class="composer" id="composer">
+          <textarea id="message" rows="1" maxlength="2000" placeholder="例如：牛顿第二定律里，合力方向和速度方向一定相同吗？" aria-label="输入问题"></textarea>
+          <button class="primary send" id="send" type="submit">发送</button>
+          <div class="hint"><span><i class="status-dot" id="statusDot"></i><span id="status">就绪</span></span><span>Enter 发送 · Shift+Enter 换行</span></div>
+        </form>
+      </footer>
+    </main>
+  </div>
+<script>
+  const $ = (selector) => document.querySelector(selector);
+  const transcript = $('#transcript');
+  const welcome = $('#welcome');
+  const state = {
+    studentId: localStorage.getItem('physics_student_id') || crypto.randomUUID().replaceAll('-', '').slice(0, 16),
+    threadId: localStorage.getItem('physics_thread_id') || crypto.randomUUID().replaceAll('-', '').slice(0, 16),
+    kpId: null,
+    kpName: '',
+    mode: 'explain',
+    busy: false,
+    points: new Map(),
+    displayedGrades: new Set(),
+    lastHint: null
+  };
+  localStorage.setItem('physics_student_id', state.studentId);
+  localStorage.setItem('physics_thread_id', state.threadId);
+
+  function escapeHtml(value) {
+    const div = document.createElement('div');
+    div.textContent = value ?? '';
+    return div.innerHTML;
+  }
+
+  function formatMessage(value) {
+    return escapeHtml(value)
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/`([^`]+)`/g, '<code>$1</code>');
+  }
+
+  function setBusy(busy, text = busy ? '正在推演…' : '就绪') {
+    state.busy = busy;
+    $('#send').disabled = busy;
+    $('#message').disabled = busy;
+    $('#status').textContent = text;
+    $('#statusDot').classList.toggle('busy', busy);
+  }
+
+  function hideWelcome() { if (welcome) welcome.hidden = true; }
+
+  function addMessage(role, content) {
+    hideWelcome();
+    const node = document.createElement('article');
+    node.className = `message ${role === 'human' ? 'user' : 'assistant'}`;
+    node.innerHTML = `<div class="avatar">${role === 'human' ? 'S' : 'g'}</div><div class="bubble">${formatMessage(content)}</div>`;
+    transcript.append(node);
+    transcript.scrollTop = transcript.scrollHeight;
+  }
+
+  function setFocus(kpId) {
+    state.kpId = kpId || null;
+    state.kpName = kpId ? (state.points.get(kpId)?.name || kpId) : '';
+    $('#focusName').textContent = state.kpName || '未选择知识点';
+    document.querySelectorAll('.point').forEach(el => el.classList.toggle('active', el.dataset.id === kpId));
+    if (window.innerWidth <= 820) $('#atlas').classList.remove('open');
+  }
+
+  const rubricNames = { formula: '列式', substitute: '代入', magnitude: '数值', unit: '单位', direction: '方向' };
+  const errorNames = { formula: '公式', substitution: '代入', calculation: '计算', unit: '单位', direction: '方向', malformed: '表达式格式' };
+
+  function renderGrade(result) {
+    const key = `${result.question_id}:${result.attempt_no}`;
+    if (state.displayedGrades.has(key)) return;
+    state.displayedGrades.add(key);
+    const card = document.createElement('section');
+    card.className = 'grade-card';
+    const rubricHtml = result.rubric_results.map(item => `<div class="rubric"><span>${escapeHtml(rubricNames[item.id] || item.id)}</span><b>${item.earned} / ${item.max}</b></div>`).join('');
+    const errors = result.error_types.length ? `<div class="grade-errors">需要检查：${result.error_types.map(item => escapeHtml(errorNames[item] || item)).join('、')}</div>` : '';
+    const solution = result.solution?.length ? `<div class="solution">${result.solution.map(escapeHtml).join('\n')}</div>` : '';
+    card.innerHTML = `<div class="grade-head"><span>第 ${result.attempt_no} 次评分</span><strong>${result.score} / 100</strong></div><div class="score-track"><span style="width:${Math.max(0, Math.min(100, result.score))}%"></span></div><div class="rubrics">${rubricHtml}</div>${errors}${solution}`;
+    transcript.append(card);
+    transcript.scrollTop = transcript.scrollHeight;
+  }
+
+  function renderHint(content) {
+    if (!content || state.lastHint === content) return;
+    state.lastHint = content;
+    const card = document.createElement('div');
+    card.className = 'hint-card';
+    card.innerHTML = `<strong>提示</strong><br>${escapeHtml(content)}`;
+    transcript.append(card);
+  }
+
+  function renderInterrupt(payload) {
+    hideWelcome();
+    const card = document.createElement('section');
+    card.className = 'interrupt';
+    card.dataset.pending = 'true';
+    if (payload.type === 'kp_choice') {
+      card.innerHTML = `<div class="interrupt-kicker">ROUTE CONFIRMATION</div><h3>${escapeHtml(payload.prompt)}</h3><div class="choices">${payload.candidates.map(item => `<button class="choice" data-answer="${escapeHtml(item.id)}"><code>${escapeHtml(item.id)}</code>${escapeHtml(item.name)}</button>`).join('')}</div>`;
+      card.querySelectorAll('.choice').forEach(button => button.addEventListener('click', () => {
+        setFocus(button.dataset.answer);
+        submitAnswer(button.dataset.answer, card);
+      }));
+    } else if (payload.type === 'question') {
+      const q = payload.question;
+      if (payload.attempt_no === 1) state.lastHint = null;
+      if (payload.previous_grade) renderGrade(payload.previous_grade);
+      if (payload.hint) renderHint(payload.hint);
+      card.dataset.questionId = q.id;
+      card.innerHTML = `<div class="interrupt-kicker">PRACTICE / ${q.kp_ids.map(escapeHtml).join(' · ')}</div><h3>${escapeHtml(q.stem)}</h3><div class="answer-grid"><label class="field">数值<input data-field="value" maxlength="80" inputmode="decimal" placeholder="例如 3"></label><label class="field">单位<input data-field="unit" maxlength="40" placeholder="例如 m/s²"></label><label class="field">方向<select data-field="direction"><option value="">无需 / 未选择</option><option value="up">向上</option><option value="down">向下</option><option value="left">向左</option><option value="right">向右</option><option value="positive">正方向</option><option value="negative">负方向</option><option value="same_as_force">与合力同向</option><option value="opposite_force">与合力反向</option></select></label></div><details class="process"><summary>写出过程（按步骤得分）</summary><div class="process-fields"><label class="field">物理关系式<input data-step="formula" maxlength="200" placeholder="例如 F = m * a"></label><label class="field">代入式<input data-step="substitution" maxlength="200" placeholder="例如 a = 6 / 2"></label></div></details><div class="practice-actions"><span class="attempt">第 ${payload.attempt_no} / 2 次作答</span><button class="primary" type="button">提交批改</button></div>`;
+      const submit = () => {
+        const value = card.querySelector('[data-field="value"]').value.trim();
+        const unit = card.querySelector('[data-field="unit"]').value.trim();
+        if (!value || !unit) return;
+        const direction = card.querySelector('[data-field="direction"]').value || null;
+        const steps = [...card.querySelectorAll('[data-step]')]
+          .filter(input => input.value.trim())
+          .map(input => ({ kind: input.dataset.step, expression: input.value.trim() }));
+        submitAnswer({ kind: 'calculation', question_id: q.id, final: { value, unit, direction }, steps }, card);
+      };
+      card.querySelector('.primary').addEventListener('click', submit);
+      card.querySelectorAll('input').forEach(input => input.addEventListener('keydown', event => { if (event.key === 'Enter') submit(); }));
+      setTimeout(() => card.querySelector('[data-field="value"]').focus(), 0);
+    }
+    transcript.append(card);
+    transcript.scrollTop = transcript.scrollHeight;
+  }
+
+  async function consumeSSE(response) {
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      throw new Error(data.detail || `请求失败（${response.status}）`);
+    }
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    while (true) {
+      const { value, done } = await reader.read();
+      buffer += decoder.decode(value || new Uint8Array(), { stream: !done });
+      const frames = buffer.split('\n\n');
+      buffer = frames.pop();
+      for (const frame of frames) {
+        const line = frame.split('\n').find(item => item.startsWith('data: '));
+        if (!line) continue;
+        const event = JSON.parse(line.slice(6));
+        if (event.type === 'token') addMessage('ai', event.content);
+        if (event.type === 'grade') renderGrade(event.result);
+        if (event.type === 'hint') renderHint(event.content);
+        if (event.type === 'interrupt') renderInterrupt(event.payload);
+        if (event.type === 'error') throw new Error(event.detail);
+      }
+      if (done) break;
+    }
+  }
+
+  async function submitAnswer(answer, card) {
+    if (state.busy) return;
+    setBusy(true, '正在继续…');
+    card.querySelectorAll('button,input,select').forEach(el => el.disabled = true);
+    try {
+      const response = await fetch('/answer', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ student_id: state.studentId, thread_id: state.threadId, answer }) });
+      await consumeSSE(response);
+      card.remove();
+    } catch (error) {
+      addMessage('ai', `暂时无法继续：${error.message}`);
+      card.querySelectorAll('button,input,select').forEach(el => el.disabled = false);
+    } finally { setBusy(false); }
+  }
+
+  async function sendMessage(text) {
+    setBusy(true);
+    addMessage('human', text);
+    try {
+      const body = { student_id: state.studentId, thread_id: state.threadId, message: text };
+      if (state.kpId) body.kp_id = state.kpId;
+      if (state.kpId || state.mode === 'mistakes') body.mode = state.mode;
+      const response = await fetch('/chat', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+      await consumeSSE(response);
+    } catch (error) { addMessage('ai', `暂时无法回答：${error.message}`); }
+    finally { setBusy(false); }
+  }
+
+  async function loadCatalog() {
+    const response = await fetch('/catalog');
+    const catalog = await response.json();
+    $('#edition').textContent = catalog.textbook;
+    const tree = $('#tree');
+    catalog.chapters.forEach((chapter, index) => {
+      const details = document.createElement('details');
+      if (index === 1 || index === 3) details.open = true;
+      details.innerHTML = `<summary>${escapeHtml(chapter.name)}</summary>`;
+      chapter.sections.forEach(section => {
+        const title = document.createElement('div');
+        title.className = 'section-title';
+        title.textContent = section.name;
+        details.append(title);
+        section.points.forEach(point => {
+          state.points.set(point.id, point);
+          const button = document.createElement('button');
+          button.className = 'point';
+          button.dataset.id = point.id;
+          button.disabled = !point.available;
+          button.title = point.available ? point.name : '讲解卡片将在后续开放';
+          button.innerHTML = `<span class="point-code">${escapeHtml(point.id)}</span>${escapeHtml(point.name)}`;
+          button.addEventListener('click', () => setFocus(point.id));
+          details.append(button);
+        });
+      });
+      tree.append(details);
+    });
+  }
+
+  async function restoreHistory() {
+    const query = new URLSearchParams({ student_id: state.studentId, thread_id: state.threadId });
+    const response = await fetch(`/history?${query}`);
+    if (!response.ok) return;
+    const history = await response.json();
+    setFocus(history.focus_kp_id);
+    if (history.mode) {
+      state.mode = history.mode;
+      document.querySelectorAll('.mode').forEach(el => el.classList.toggle('active', el.dataset.mode === state.mode));
+    }
+    history.messages.forEach(message => addMessage(message.role, message.content));
+    history.pending.forEach(item => renderInterrupt(item.payload));
+  }
+
+  $('#composer').addEventListener('submit', event => {
+    event.preventDefault();
+    const text = $('#message').value.trim();
+    if (!text || state.busy) return;
+    $('#message').value = '';
+    sendMessage(text);
+  });
+  $('#message').addEventListener('keydown', event => {
+    if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); $('#composer').requestSubmit(); }
+  });
+  document.querySelectorAll('.mode').forEach(button => button.addEventListener('click', () => {
+    state.mode = button.dataset.mode;
+    document.querySelectorAll('.mode').forEach(el => el.classList.toggle('active', el === button));
+  }));
+  $('#clearFocus').addEventListener('click', () => setFocus(null));
+  $('#treeToggle').addEventListener('click', () => $('#atlas').classList.toggle('open'));
+
+  (async () => {
+    try { await loadCatalog(); await restoreHistory(); }
+    catch (error) { addMessage('ai', `初始化失败：${error.message}`); }
+  })();
+</script>
+</body>
+</html>

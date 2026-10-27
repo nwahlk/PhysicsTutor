@@ -1,0 +1,10 @@
+langgraph==1.2.16
+langchain-openai==1.6.0
+langgraph-checkpoint-postgres==3.2.0
+psycopg[binary]==3.3.6
+psycopg-pool==3.3.3
+fastapi==0.158.2
+uvicorn==0.54.0
+PyYAML==6.0.3
+sympy==1.14.0
+pint==0.25.2

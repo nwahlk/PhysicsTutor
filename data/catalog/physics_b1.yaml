@@ -1,0 +1,119 @@
+subject: physics
+textbook: 人教版 2019 必修第一册
+chapters:
+  - id: b1.1
+    name: 第一章 运动的描述
+    sections:
+      - id: b1.1.1
+        name: 质点 参考系
+        points:
+          - {id: b1.1.1.1, name: 质点}
+          - {id: b1.1.1.2, name: 参考系}
+          - {id: b1.1.1.3, name: 坐标系}
+      - id: b1.1.2
+        name: 时间 位移
+        points:
+          - {id: b1.1.2.1, name: 时刻和时间间隔}
+          - {id: b1.1.2.2, name: 位置和位移, prereqs: [b1.1.1.3]}
+          - {id: b1.1.2.3, name: 矢量和标量}
+          - {id: b1.1.2.4, name: 位移—时间图像, prereqs: [b1.1.2.2]}
+      - id: b1.1.3
+        name: 位置变化快慢的描述——速度
+        points:
+          - {id: b1.1.3.1, name: 速度, prereqs: [b1.1.2.2]}
+          - {id: b1.1.3.2, name: 平均速度和瞬时速度, prereqs: [b1.1.3.1]}
+          - {id: b1.1.3.3, name: 速度—时间图像, prereqs: [b1.1.3.1]}
+      - id: b1.1.4
+        name: 速度变化快慢的描述——加速度
+        points:
+          - {id: b1.1.4.1, name: 加速度, prereqs: [b1.1.3.1]}
+          - {id: b1.1.4.2, name: 加速度方向与速度方向的关系, prereqs: [b1.1.4.1, b1.1.2.3]}
+          - {id: b1.1.4.3, name: 从 v-t 图像看加速度, prereqs: [b1.1.4.1, b1.1.3.3]}
+  - id: b1.2
+    name: 第二章 匀变速直线运动的研究
+    sections:
+      - id: b1.2.1
+        name: 实验：探究小车速度随时间变化的规律
+        points:
+          - {id: b1.2.1.1, name: 打点计时器与纸带处理, prereqs: [b1.1.3.2]}
+      - id: b1.2.2
+        name: 匀变速直线运动的速度与时间的关系
+        points:
+          - {id: b1.2.2.1, name: 匀变速直线运动, prereqs: [b1.1.4.1]}
+          - {id: b1.2.2.2, name: 速度与时间的关系, prereqs: [b1.2.2.1]}
+      - id: b1.2.3
+        name: 匀变速直线运动的位移与时间的关系
+        points:
+          - {id: b1.2.3.1, name: 位移与时间的关系, prereqs: [b1.2.2.2]}
+          - {id: b1.2.3.2, name: 速度与位移的关系, prereqs: [b1.2.3.1]}
+          - {id: b1.2.3.3, name: 匀变速直线运动的推论, prereqs: [b1.2.3.1]}
+      - id: b1.2.4
+        name: 自由落体运动
+        points:
+          - {id: b1.2.4.1, name: 自由落体运动, prereqs: [b1.2.3.1]}
+          - {id: b1.2.4.2, name: 自由落体加速度, prereqs: [b1.2.4.1]}
+  - id: b1.3
+    name: 第三章 相互作用——力
+    sections:
+      - id: b1.3.1
+        name: 重力与弹力
+        points:
+          - {id: b1.3.1.1, name: 力和力的图示, prereqs: [b1.1.2.3]}
+          - {id: b1.3.1.2, name: 重力与重心, prereqs: [b1.3.1.1]}
+          - {id: b1.3.1.3, name: 弹力, prereqs: [b1.3.1.1]}
+          - {id: b1.3.1.4, name: 胡克定律, prereqs: [b1.3.1.3]}
+      - id: b1.3.2
+        name: 摩擦力
+        points:
+          - {id: b1.3.2.1, name: 滑动摩擦力, prereqs: [b1.3.1.3]}
+          - {id: b1.3.2.2, name: 静摩擦力, prereqs: [b1.3.2.1]}
+      - id: b1.3.3
+        name: 牛顿第三定律
+        points:
+          - {id: b1.3.3.1, name: 作用力和反作用力, prereqs: [b1.3.1.1]}
+          - {id: b1.3.3.2, name: 牛顿第三定律, prereqs: [b1.3.3.1]}
+          - {id: b1.3.3.3, name: 物体的受力分析, prereqs: [b1.3.1.2, b1.3.1.3, b1.3.2.2, b1.3.3.2]}
+      - id: b1.3.4
+        name: 力的合成和分解
+        points:
+          - {id: b1.3.4.1, name: 合力和分力, prereqs: [b1.3.1.1]}
+          - {id: b1.3.4.2, name: 力的合成（平行四边形定则）, prereqs: [b1.3.4.1]}
+          - {id: b1.3.4.3, name: 力的分解, prereqs: [b1.3.4.2]}
+      - id: b1.3.5
+        name: 共点力的平衡
+        points:
+          - {id: b1.3.5.1, name: 共点力平衡的条件, prereqs: [b1.3.4.2, b1.3.3.3]}
+          - {id: b1.3.5.2, name: 正交分解法解平衡问题, prereqs: [b1.3.5.1, b1.3.4.3]}
+  - id: b1.4
+    name: 第四章 运动和力的关系
+    sections:
+      - id: b1.4.1
+        name: 牛顿第一定律
+        points:
+          - {id: b1.4.1.1, name: 伽利略理想实验}
+          - {id: b1.4.1.2, name: 牛顿第一定律, prereqs: [b1.4.1.1]}
+          - {id: b1.4.1.3, name: 惯性与质量, prereqs: [b1.4.1.2]}
+      - id: b1.4.2
+        name: 实验：探究加速度与力、质量的关系
+        points:
+          - {id: b1.4.2.1, name: 控制变量法与实验数据处理, prereqs: [b1.1.4.1, b1.2.1.1]}
+      - id: b1.4.3
+        name: 牛顿第二定律
+        points:
+          - {id: b1.4.3.1, name: 牛顿第二定律, prereqs: [b1.1.4.1, b1.3.3.3]}
+          - {id: b1.4.3.2, name: 力的单位牛顿, prereqs: [b1.4.3.1]}
+      - id: b1.4.4
+        name: 力学单位制
+        points:
+          - {id: b1.4.4.1, name: 基本单位和导出单位}
+          - {id: b1.4.4.2, name: 国际单位制, prereqs: [b1.4.4.1]}
+      - id: b1.4.5
+        name: 牛顿运动定律的应用
+        points:
+          - {id: b1.4.5.1, name: 从受力确定运动情况, prereqs: [b1.4.3.1, b1.2.3.2]}
+          - {id: b1.4.5.2, name: 从运动情况确定受力, prereqs: [b1.4.3.1, b1.2.3.2]}
+      - id: b1.4.6
+        name: 超重和失重
+        points:
+          - {id: b1.4.6.1, name: 超重和失重, prereqs: [b1.4.3.1]}
+          - {id: b1.4.6.2, name: 完全失重, prereqs: [b1.4.6.1]}

@@ -1,0 +1,52 @@
+name: physics-tutor
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: tutor
+      POSTGRES_PASSWORD: tutorpass
+      POSTGRES_DB: tutordb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tutor -d tutordb"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  migrate:
+    build: .
+    command: ["python", "migrate.py"]
+    environment:
+      DATABASE_URL: postgresql://tutor:tutorpass@db:5432/tutordb
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+
+  app:
+    build: .
+    environment:
+      DATABASE_URL: postgresql://tutor:tutorpass@db:5432/tutordb
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+      DASHSCOPE_API_KEY: ${DASHSCOPE_API_KEY:-}
+      LANGSMITH_API_KEY: ${LANGSMITH_API_KEY:-}
+      LANGSMITH_TRACING: ${LANGSMITH_TRACING:-true}
+      LANGSMITH_PROJECT: ${LANGSMITH_PROJECT:-physics-tutor}
+      WEB_CONCURRENCY: ${WEB_CONCURRENCY:-2}
+      POOL_MAX_SIZE: ${POOL_MAX_SIZE:-5}
+    ports:
+      - "8401:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    init: true
+    stop_grace_period: 20s
+    restart: unless-stopped
+
+volumes:
+  pgdata:

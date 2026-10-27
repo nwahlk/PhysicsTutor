@@ -1,0 +1,199 @@
+templates:
+  - schema_version: 1
+    id: b1.2.2.final-velocity
+    version: 1
+    kp_ids: [b1.2.2.2]
+    difficulty: 1
+    type: multi_step_numeric
+    parameters:
+      initial_velocity: {unit: m/s, values: [0, 2, 4, 6]}
+      acceleration: {unit: m/s^2, values: [1, 2, 3, 4]}
+      time: {unit: s, values: [2, 3, 4, 5]}
+    constraints: [initial_velocity + acceleration * time <= 30]
+    stem: "一物体以 {initial_velocity} m/s 的初速度做匀加速直线运动，加速度为 {acceleration} m/s²，经过 {time} s 后速度多大？"
+    answer: {expression: initial_velocity + acceleration * time, unit: m/s, direction: positive}
+    symbols:
+      final_velocity: [v]
+      initial_velocity: [v0]
+      acceleration: [a]
+      time: [t]
+    rubric:
+      - {id: formula, kind: equation, expected: "final_velocity = initial_velocity + acceleration * time", points: 30}
+      - {id: substitute, kind: substitution, expected: "final_velocity = initial_velocity + acceleration * time", points: 30}
+      - {id: magnitude, kind: final_value, points: 25}
+      - {id: unit, kind: final_unit, points: 10}
+      - {id: direction, kind: direction, points: 5}
+    golden_cases:
+      - {params: {initial_velocity: 0, acceleration: 2, time: 3}, value: 6, unit: m/s}
+      - {params: {initial_velocity: 4, acceleration: 3, time: 2}, value: 10, unit: m/s}
+      - {params: {initial_velocity: 2, acceleration: 4, time: 5}, value: 22, unit: m/s}
+
+  - schema_version: 1
+    id: b1.2.2.acceleration-from-velocities
+    version: 1
+    kp_ids: [b1.2.2.2]
+    difficulty: 2
+    type: multi_step_numeric
+    parameters:
+      initial_velocity: {unit: m/s, values: [0, 2, 4, 6]}
+      final_velocity: {unit: m/s, values: [8, 10, 12, 14]}
+      time: {unit: s, values: [2, 4, 5]}
+    constraints: [final_velocity > initial_velocity]
+    stem: "物体速度在 {time} s 内由 {initial_velocity} m/s 均匀增至 {final_velocity} m/s，求加速度。"
+    answer: {expression: (final_velocity - initial_velocity) / time, unit: m/s^2, direction: positive}
+    symbols:
+      initial_velocity: [v0]
+      final_velocity: [v]
+      acceleration: [a]
+      time: [t]
+    rubric:
+      - {id: formula, kind: equation, expected: "acceleration = (final_velocity - initial_velocity) / time", points: 30}
+      - {id: substitute, kind: substitution, expected: "acceleration = (final_velocity - initial_velocity) / time", points: 30}
+      - {id: magnitude, kind: final_value, points: 25}
+      - {id: unit, kind: final_unit, points: 10}
+      - {id: direction, kind: direction, points: 5}
+    golden_cases:
+      - {params: {initial_velocity: 0, final_velocity: 8, time: 4}, value: 2, unit: m/s^2}
+      - {params: {initial_velocity: 2, final_velocity: 12, time: 5}, value: 2, unit: m/s^2}
+      - {params: {initial_velocity: 6, final_velocity: 14, time: 2}, value: 4, unit: m/s^2}
+
+  - schema_version: 1
+    id: b1.2.3.displacement-time
+    version: 1
+    kp_ids: [b1.2.3.1]
+    difficulty: 2
+    type: multi_step_numeric
+    parameters:
+      initial_velocity: {unit: m/s, values: [0, 2, 4]}
+      acceleration: {unit: m/s^2, values: [1, 2, 3]}
+      time: {unit: s, values: [2, 4, 6]}
+    constraints: [initial_velocity * time + acceleration * time ** 2 / 2 <= 100]
+    stem: "物体以 {initial_velocity} m/s 的初速度、{acceleration} m/s² 的加速度做匀加速直线运动，{time} s 内位移多大？"
+    answer: {expression: initial_velocity * time + acceleration * time ** 2 / 2, unit: m, direction: positive}
+    symbols:
+      displacement: [x, s]
+      initial_velocity: [v0]
+      acceleration: [a]
+      time: [t]
+    rubric:
+      - {id: formula, kind: equation, expected: "displacement = initial_velocity * time + acceleration * time ** 2 / 2", points: 30}
+      - {id: substitute, kind: substitution, expected: "displacement = initial_velocity * time + acceleration * time ** 2 / 2", points: 30}
+      - {id: magnitude, kind: final_value, points: 25}
+      - {id: unit, kind: final_unit, points: 10}
+      - {id: direction, kind: direction, points: 5}
+    golden_cases:
+      - {params: {initial_velocity: 0, acceleration: 2, time: 4}, value: 16, unit: m}
+      - {params: {initial_velocity: 2, acceleration: 1, time: 6}, value: 30, unit: m}
+      - {params: {initial_velocity: 4, acceleration: 3, time: 2}, value: 14, unit: m}
+
+  - schema_version: 1
+    id: b1.2.3.acceleration-from-distance
+    version: 1
+    kp_ids: [b1.2.3.2]
+    difficulty: 3
+    type: multi_step_numeric
+    parameters:
+      initial_velocity: {unit: m/s, values: [0, 2, 4]}
+      final_velocity: {unit: m/s, values: [8, 10, 12]}
+      displacement: {unit: m, values: [10, 20, 25]}
+    constraints: [final_velocity > initial_velocity]
+    stem: "物体做匀加速直线运动，初速度为 {initial_velocity} m/s，末速度为 {final_velocity} m/s，位移为 {displacement} m，求加速度。"
+    answer: {expression: (final_velocity ** 2 - initial_velocity ** 2) / (2 * displacement), unit: m/s^2, direction: positive}
+    symbols:
+      initial_velocity: [v0]
+      final_velocity: [v]
+      displacement: [x, s]
+      acceleration: [a]
+    rubric:
+      - {id: formula, kind: equation, expected: "final_velocity ** 2 - initial_velocity ** 2 = 2 * acceleration * displacement", points: 30}
+      - {id: substitute, kind: substitution, expected: "acceleration = (final_velocity ** 2 - initial_velocity ** 2) / (2 * displacement)", points: 30}
+      - {id: magnitude, kind: final_value, points: 25}
+      - {id: unit, kind: final_unit, points: 10}
+      - {id: direction, kind: direction, points: 5}
+    golden_cases:
+      - {params: {initial_velocity: 0, final_velocity: 10, displacement: 25}, value: 2, unit: m/s^2}
+      - {params: {initial_velocity: 4, final_velocity: 8, displacement: 20}, value: 1.2, unit: m/s^2}
+      - {params: {initial_velocity: 2, final_velocity: 12, displacement: 10}, value: 7, unit: m/s^2}
+
+  - schema_version: 1
+    id: b1.2.3.average-velocity-displacement
+    version: 1
+    kp_ids: [b1.2.3.3]
+    difficulty: 2
+    type: multi_step_numeric
+    parameters:
+      initial_velocity: {unit: m/s, values: [0, 2, 4]}
+      final_velocity: {unit: m/s, values: [6, 8, 10, 12]}
+      time: {unit: s, values: [2, 4, 6]}
+    constraints: [final_velocity >= initial_velocity]
+    stem: "物体做匀变速直线运动，初速度为 {initial_velocity} m/s，{time} s 后速度为 {final_velocity} m/s，求这段时间的位移。"
+    answer: {expression: (initial_velocity + final_velocity) * time / 2, unit: m, direction: positive}
+    symbols:
+      displacement: [x, s]
+      initial_velocity: [v0]
+      final_velocity: [v]
+      time: [t]
+    rubric:
+      - {id: formula, kind: equation, expected: "displacement = (initial_velocity + final_velocity) * time / 2", points: 30}
+      - {id: substitute, kind: substitution, expected: "displacement = (initial_velocity + final_velocity) * time / 2", points: 30}
+      - {id: magnitude, kind: final_value, points: 25}
+      - {id: unit, kind: final_unit, points: 10}
+      - {id: direction, kind: direction, points: 5}
+    golden_cases:
+      - {params: {initial_velocity: 0, final_velocity: 8, time: 4}, value: 16, unit: m}
+      - {params: {initial_velocity: 2, final_velocity: 10, time: 6}, value: 36, unit: m}
+      - {params: {initial_velocity: 4, final_velocity: 12, time: 2}, value: 16, unit: m}
+
+  - schema_version: 1
+    id: b1.2.4.free-fall-speed
+    version: 1
+    kp_ids: [b1.2.4.1, b1.2.4.2]
+    difficulty: 1
+    type: multi_step_numeric
+    parameters:
+      gravity: {unit: m/s^2, values: [10]}
+      time: {unit: s, values: [1, 2, 3, 4]}
+    constraints: [gravity * time <= 50]
+    stem: "取 g={gravity} m/s²，物体从静止开始自由下落 {time} s，求此时速度大小和方向。"
+    answer: {expression: gravity * time, unit: m/s, direction: down}
+    symbols:
+      speed: [v]
+      gravity: [g]
+      time: [t]
+    rubric:
+      - {id: formula, kind: equation, expected: "speed = gravity * time", points: 30}
+      - {id: substitute, kind: substitution, expected: "speed = gravity * time", points: 30}
+      - {id: magnitude, kind: final_value, points: 25}
+      - {id: unit, kind: final_unit, points: 10}
+      - {id: direction, kind: direction, points: 5}
+    golden_cases:
+      - {params: {gravity: 10, time: 1}, value: 10, unit: m/s}
+      - {params: {gravity: 10, time: 2}, value: 20, unit: m/s}
+      - {params: {gravity: 10, time: 4}, value: 40, unit: m/s}
+
+  - schema_version: 1
+    id: b1.2.4.free-fall-height
+    version: 1
+    kp_ids: [b1.2.4.1, b1.2.4.2]
+    difficulty: 2
+    type: multi_step_numeric
+    parameters:
+      gravity: {unit: m/s^2, values: [10]}
+      time: {unit: s, values: [1, 2, 3, 4]}
+    constraints: [gravity * time ** 2 / 2 <= 100]
+    stem: "取 g={gravity} m/s²，物体从静止开始自由下落 {time} s，求下落高度。"
+    answer: {expression: gravity * time ** 2 / 2, unit: m, direction: down}
+    symbols:
+      height: [h]
+      gravity: [g]
+      time: [t]
+    rubric:
+      - {id: formula, kind: equation, expected: "height = gravity * time ** 2 / 2", points: 30}
+      - {id: substitute, kind: substitution, expected: "height = gravity * time ** 2 / 2", points: 30}
+      - {id: magnitude, kind: final_value, points: 25}
+      - {id: unit, kind: final_unit, points: 10}
+      - {id: direction, kind: direction, points: 5}
+    golden_cases:
+      - {params: {gravity: 10, time: 1}, value: 5, unit: m}
+      - {params: {gravity: 10, time: 2}, value: 20, unit: m}
+      - {params: {gravity: 10, time: 4}, value: 80, unit: m}

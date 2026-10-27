@@ -1,0 +1,44 @@
+{
+  "generated_at": "2026-10-27T12:09:21",
+  "dataset": "evals/grading_golden.jsonl",
+  "dataset_sha256": "2693675adf166db7925c4a42feeb444e1280f6b10a84b7601d91ecba62a74a4d",
+  "case_count": 150,
+  "exact_accuracy": 1.0,
+  "correct_accuracy": 1.0,
+  "false_negative_rate": 0.0,
+  "unit_error_recall": 1.0,
+  "direction_error_recall": 1.0,
+  "rubric_consistency": 1.0,
+  "per_category": {
+    "correct": {
+      "total": 45,
+      "matches": 45,
+      "accuracy": 1.0
+    },
+    "boundary": {
+      "total": 23,
+      "matches": 23,
+      "accuracy": 1.0
+    },
+    "unit": {
+      "total": 22,
+      "matches": 22,
+      "accuracy": 1.0
+    },
+    "direction": {
+      "total": 15,
+      "matches": 15,
+      "accuracy": 1.0
+    },
+    "steps": {
+      "total": 30,
+      "matches": 30,
+      "accuracy": 1.0
+    },
+    "malformed": {
+      "total": 15,
+      "matches": 15,
+      "accuracy": 1.0
+    }
+  }
+}

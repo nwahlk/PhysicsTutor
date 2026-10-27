@@ -1,0 +1,30 @@
+name: M2 Grading Eval
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 1 * * 1"
+
+jobs:
+  deterministic-grading:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - run: pip install -r requirements-dev.txt
+      - name: Golden、1000 seeds、性能与 300 题复核门禁
+        run: python eval_grading.py
+      - name: Holdout 绝对门禁
+        run: python eval_grading.py --cases evals/grading_holdout.jsonl --no-baseline --skip-properties --report evals/reports/grading-holdout-latest.json
+      - name: 上传评测报告
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: m2-grading-eval-reports
+          path: evals/reports/
+          if-no-files-found: error

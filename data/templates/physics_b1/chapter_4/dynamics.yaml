@@ -1,0 +1,194 @@
+templates:
+  - schema_version: 1
+    id: b1.4.3.net-force-acceleration
+    version: 1
+    kp_ids: [b1.4.3.1]
+    difficulty: 1
+    type: multi_step_numeric
+    parameters:
+      mass: {unit: kg, values: [1, 2, 4, 5]}
+      force: {unit: N, values: [4, 6, 8, 10, 12]}
+    constraints: [force / mass <= 20]
+    stem: "质量为 {mass} kg 的物体受到 {force} N 的水平合力，求加速度大小和方向。"
+    answer: {expression: force / mass, unit: m/s^2, direction: same_as_force}
+    symbols:
+      mass: [m]
+      force: [F, F_net]
+      acceleration: [a]
+    rubric:
+      - {id: formula, kind: equation, expected: "force = mass * acceleration", points: 30}
+      - {id: substitute, kind: substitution, expected: "acceleration = force / mass", points: 30}
+      - {id: magnitude, kind: final_value, points: 25}
+      - {id: unit, kind: final_unit, points: 10}
+      - {id: direction, kind: direction, points: 5}
+    golden_cases:
+      - {params: {mass: 2, force: 6}, value: 3, unit: m/s^2}
+      - {params: {mass: 4, force: 8}, value: 2, unit: m/s^2}
+      - {params: {mass: 5, force: 10}, value: 2, unit: m/s^2}
+
+  - schema_version: 1
+    id: b1.4.3.force-from-acceleration
+    version: 1
+    kp_ids: [b1.4.3.1, b1.4.3.2]
+    difficulty: 1
+    type: multi_step_numeric
+    parameters:
+      mass: {unit: kg, values: [1, 2, 3, 5]}
+      acceleration: {unit: m/s^2, values: [1, 2, 3, 4]}
+    constraints: [mass * acceleration <= 30]
+    stem: "质量为 {mass} kg 的物体产生 {acceleration} m/s² 的加速度，求所受合力大小。"
+    answer: {expression: mass * acceleration, unit: N}
+    symbols:
+      mass: [m]
+      acceleration: [a]
+      force: [F, F_net]
+    rubric:
+      - {id: formula, kind: equation, expected: "force = mass * acceleration", points: 35}
+      - {id: substitute, kind: substitution, expected: "force = mass * acceleration", points: 30}
+      - {id: magnitude, kind: final_value, points: 25}
+      - {id: unit, kind: final_unit, points: 10}
+    golden_cases:
+      - {params: {mass: 1, acceleration: 4}, value: 4, unit: N}
+      - {params: {mass: 3, acceleration: 2}, value: 6, unit: N}
+      - {params: {mass: 5, acceleration: 3}, value: 15, unit: N}
+
+  - schema_version: 1
+    id: b1.4.3.mass-from-force
+    version: 1
+    kp_ids: [b1.4.3.1, b1.4.3.2]
+    difficulty: 2
+    type: multi_step_numeric
+    parameters:
+      force: {unit: N, values: [4, 6, 8, 10, 12]}
+      acceleration: {unit: m/s^2, values: [1, 2, 4]}
+    constraints: [force / acceleration <= 20]
+    stem: "物体受到 {force} N 的合力时产生 {acceleration} m/s² 的加速度，求物体质量。"
+    answer: {expression: force / acceleration, unit: kg}
+    symbols:
+      mass: [m]
+      acceleration: [a]
+      force: [F, F_net]
+    rubric:
+      - {id: formula, kind: equation, expected: "force = mass * acceleration", points: 35}
+      - {id: substitute, kind: substitution, expected: "mass = force / acceleration", points: 30}
+      - {id: magnitude, kind: final_value, points: 25}
+      - {id: unit, kind: final_unit, points: 10}
+    golden_cases:
+      - {params: {force: 4, acceleration: 2}, value: 2, unit: kg}
+      - {params: {force: 12, acceleration: 4}, value: 3, unit: kg}
+      - {params: {force: 10, acceleration: 1}, value: 10, unit: kg}
+
+  - schema_version: 1
+    id: b1.4.5.horizontal-pull-friction
+    version: 1
+    kp_ids: [b1.4.5.1]
+    difficulty: 2
+    type: multi_step_numeric
+    parameters:
+      mass: {unit: kg, values: [1, 2, 4, 5]}
+      pull: {unit: N, values: [8, 10, 12, 16]}
+      friction: {unit: N, values: [2, 4, 6]}
+    constraints: [pull > friction, (pull - friction) / mass <= 15]
+    stem: "质量为 {mass} kg 的物体在水平面上受到向右 {pull} N 的拉力和向左 {friction} N 的滑动摩擦力，求加速度大小和方向。"
+    answer: {expression: (pull - friction) / mass, unit: m/s^2, direction: right}
+    symbols:
+      mass: [m]
+      pull: [F_pull]
+      friction: [f]
+      acceleration: [a]
+    rubric:
+      - {id: formula, kind: equation, expected: "pull - friction = mass * acceleration", points: 30}
+      - {id: substitute, kind: substitution, expected: "acceleration = (pull - friction) / mass", points: 30}
+      - {id: magnitude, kind: final_value, points: 25}
+      - {id: unit, kind: final_unit, points: 10}
+      - {id: direction, kind: direction, points: 5}
+    golden_cases:
+      - {params: {mass: 2, pull: 10, friction: 4}, value: 3, unit: m/s^2}
+      - {params: {mass: 4, pull: 16, friction: 4}, value: 3, unit: m/s^2}
+      - {params: {mass: 5, pull: 12, friction: 2}, value: 2, unit: m/s^2}
+
+  - schema_version: 1
+    id: b1.4.5.braking-force
+    version: 1
+    kp_ids: [b1.4.5.2]
+    difficulty: 3
+    type: multi_step_numeric
+    parameters:
+      mass: {unit: kg, values: [1, 2, 4, 5]}
+      initial_speed: {unit: m/s, values: [4, 6, 8, 10]}
+      stopping_distance: {unit: m, values: [4, 5, 8, 10]}
+    constraints: [mass * initial_speed ** 2 / (2 * stopping_distance) <= 50]
+    stem: "质量为 {mass} kg 的物体以 {initial_speed} m/s 的速度运动，受恒定阻力后在 {stopping_distance} m 内停下，求阻力大小。"
+    answer: {expression: mass * initial_speed ** 2 / (2 * stopping_distance), unit: N}
+    symbols:
+      mass: [m]
+      initial_speed: [v0]
+      stopping_distance: [x, s]
+      force: [F, f]
+    rubric:
+      - {id: formula, kind: equation, expected: "initial_speed ** 2 = 2 * force * stopping_distance / mass", points: 35}
+      - {id: substitute, kind: substitution, expected: "force = mass * initial_speed ** 2 / (2 * stopping_distance)", points: 30}
+      - {id: magnitude, kind: final_value, points: 25}
+      - {id: unit, kind: final_unit, points: 10}
+    golden_cases:
+      - {params: {mass: 2, initial_speed: 4, stopping_distance: 4}, value: 4, unit: N}
+      - {params: {mass: 5, initial_speed: 10, stopping_distance: 10}, value: 25, unit: N}
+      - {params: {mass: 4, initial_speed: 8, stopping_distance: 8}, value: 16, unit: N}
+
+  - schema_version: 1
+    id: b1.4.6.apparent-weight-up
+    version: 1
+    kp_ids: [b1.4.6.1]
+    difficulty: 2
+    type: multi_step_numeric
+    parameters:
+      mass: {unit: kg, values: [40, 50, 60, 70]}
+      gravity: {unit: m/s^2, values: [10]}
+      acceleration: {unit: m/s^2, values: [1, 2, 3]}
+    constraints: [acceleration < gravity]
+    stem: "质量为 {mass} kg 的人站在竖直向上加速的电梯内，电梯加速度为 {acceleration} m/s²，取 g={gravity} m/s²，求人对地板的压力大小。"
+    answer: {expression: mass * (gravity + acceleration), unit: N, direction: down}
+    symbols:
+      mass: [m]
+      gravity: [g]
+      acceleration: [a]
+      normal_force: [N]
+    rubric:
+      - {id: formula, kind: equation, expected: "normal_force - mass * gravity = mass * acceleration", points: 30}
+      - {id: substitute, kind: substitution, expected: "normal_force = mass * (gravity + acceleration)", points: 30}
+      - {id: magnitude, kind: final_value, points: 25}
+      - {id: unit, kind: final_unit, points: 10}
+      - {id: direction, kind: direction, points: 5}
+    golden_cases:
+      - {params: {mass: 40, gravity: 10, acceleration: 1}, value: 440, unit: N}
+      - {params: {mass: 50, gravity: 10, acceleration: 2}, value: 600, unit: N}
+      - {params: {mass: 70, gravity: 10, acceleration: 3}, value: 910, unit: N}
+
+  - schema_version: 1
+    id: b1.4.6.apparent-weight-down
+    version: 1
+    kp_ids: [b1.4.6.1, b1.4.6.2]
+    difficulty: 2
+    type: multi_step_numeric
+    parameters:
+      mass: {unit: kg, values: [40, 50, 60, 70]}
+      gravity: {unit: m/s^2, values: [10]}
+      acceleration: {unit: m/s^2, values: [1, 2, 4, 10]}
+    constraints: [acceleration <= gravity]
+    stem: "质量为 {mass} kg 的人站在竖直向下加速的电梯内，电梯加速度为 {acceleration} m/s²，取 g={gravity} m/s²，求人对地板的压力大小。"
+    answer: {expression: mass * (gravity - acceleration), unit: N, direction: down}
+    symbols:
+      mass: [m]
+      gravity: [g]
+      acceleration: [a]
+      normal_force: [N]
+    rubric:
+      - {id: formula, kind: equation, expected: "mass * gravity - normal_force = mass * acceleration", points: 30}
+      - {id: substitute, kind: substitution, expected: "normal_force = mass * (gravity - acceleration)", points: 30}
+      - {id: magnitude, kind: final_value, points: 25}
+      - {id: unit, kind: final_unit, points: 10}
+      - {id: direction, kind: direction, points: 5}
+    golden_cases:
+      - {params: {mass: 40, gravity: 10, acceleration: 1}, value: 360, unit: N}
+      - {params: {mass: 60, gravity: 10, acceleration: 4}, value: 360, unit: N}
+      - {params: {mass: 50, gravity: 10, acceleration: 10}, value: 0, unit: N}
